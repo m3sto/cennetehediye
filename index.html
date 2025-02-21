@@ -3,306 +3,44 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>İyi Ki Doğdun Cennet! ❤️</title>
+    <title>Kırık Kalp</title>
     <style>
         body {
             margin: 0;
-            overflow: hidden;
-            background: #1a1a1a;
-            font-family: 'Arial', sans-serif;
-            -webkit-tap-highlight-color: transparent;
-        }
-
-        #container {
-            position: relative;
+            background: #1a1a1a; /* Karanlık arka plan */
             height: 100vh;
-            touch-action: manipulation;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
         }
 
-        .notification {
-            position: absolute;
-            top: 20px;
-            right: -300px;
-            background: rgba(255, 255, 255, 0.95);
-            padding: 12px 20px;
-            border-radius: 12px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            animation: slideIn 0.5s forwards;
-            margin: 8px 0;
-            font-size: 14px;
-            max-width: 80%;
-            left: 50%;
-            transform: translateX(-50%);
-            right: auto;
-            width: max-content;
-        }
-
-        @keyframes slideIn {
-            to { 
-                opacity: 1;
-                left: 50%;
-                transform: translateX(-50%);
-            }
-        }
-
-        .heart {
-            position: absolute;
-            font-size: 20px;
-            color: #ff4081;
-            animation: float 4s infinite;
-            pointer-events: none;
+        .broken-heart {
+            width: 300px; /* Kalp boyutu */
+            height: 300px;
+            background-image: url('https://static.vecteezy.com/system/resources/previews/047/308/944/non_2x/broken-heart-image-on-transparent-background-free-png.png'); /* Transparan kırık kalp resmi */
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+            animation: float 3s ease-in-out infinite;
         }
 
         @keyframes float {
-            0%, 100% { transform: translateY(0) rotate(0deg); }
-            50% { transform: translateY(-20px) rotate(10deg); }
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
         }
 
-        #finalHeart {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%) scale(0);
-            font-size: 150px;
-            color: #ff1744;
-            animation: pulse 2s forwards;
-            cursor: pointer;
-            z-index: 999;
-        }
-
-        @keyframes pulse {
-            0% { transform: translate(-50%, -50%) scale(0); }
-            50% { transform: translate(-50%, -50%) scale(1.2); }
-            100% { transform: translate(-50%, -50%) scale(1); }
-        }
-
-        #finalMessage {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background: white;
-            padding: 20px 30px;
-            border-radius: 15px;
-            text-align: center;
-            opacity: 0;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-            animation: messagePop 1s 10s forwards;
-            width: 80%;
-            max-width: 300px;
-            z-index: 1000;
-        }
-
-        #finalMessage h2 {
-            margin: 0 0 10px 0;
-            font-size: 1.4rem;
-        }
-
-        #finalMessage p {
-            margin: 5px 0;
-            font-size: 0.9rem;
-        }
-
-        @keyframes messagePop {
-            0% { opacity: 0; transform: translate(-50%, -50%) scale(0); }
-            100% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
-        }
-
-        canvas {
-            position: fixed;
-            top: 0;
-            left: 0;
-        }
-
+        /* Mobil Optimizasyon */
         @media (max-width: 480px) {
-            .notification {
-                font-size: 13px;
-                padding: 10px 15px;
-            }
-
-            #finalHeart {
-                font-size: 120px;
-            }
-
-            #finalMessage h2 {
-                font-size: 1.2rem;
-            }
-
-            #finalMessage p {
-                font-size: 0.8rem;
+            .broken-heart {
+                width: 200px;
+                height: 200px;
             }
         }
     </style>
 </head>
 <body>
-    <div id="container">
-        <canvas id="particles"></canvas>
-        <div id="notifications"></div>
-        <div id="finalHeart">❤️</div>
-        <div id="finalMessage">
-            <h2>Nice Mutlu Senelere Cennet! ❤️</h2>
-            <p>En kötü günün doğum günün gibi olsun!</p>
-            <p>-musto</p>
-        </div>
-    </div>
-
-    <script>
-        // Mobile kontrol
-        const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
-        
-        // Partikül efekti
-        const canvas = document.getElementById('particles');
-        const ctx = canvas.getContext('2d');
-        
-        function initCanvas() {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-            if(isMobile && window.devicePixelRatio > 1) {
-                canvas.style.width = window.innerWidth + 'px';
-                canvas.style.height = window.innerHeight + 'px';
-                canvas.width *= 2;
-                canvas.height *= 2;
-                ctx.scale(2, 2);
-            }
-        }
-        initCanvas();
-
-        const particles = [];
-        class Particle {
-            constructor() {
-                this.x = Math.random() * canvas.width;
-                this.y = 0;
-                this.size = (isMobile ? Math.random() * 3 + 1 : Math.random() * 5 + 2);
-                this.speed = (isMobile ? Math.random() * 2 + 1 : Math.random() * 3 + 2);
-                this.color = `hsl(${Math.random() * 360}, 70%, 50%)`;
-            }
-
-            update() {
-                this.y += this.speed;
-                if (this.y > canvas.height) this.y = 0;
-            }
-
-            draw() {
-                ctx.fillStyle = this.color;
-                ctx.beginPath();
-                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-                ctx.fill();
-            }
-        }
-
-        function initParticles() {
-            const count = isMobile ? 30 : 50;
-            for (let i = 0; i < count; i++) {
-                particles.push(new Particle());
-            }
-        }
-
-        function animateParticles() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            particles.forEach(particle => {
-                particle.update();
-                particle.draw();
-            });
-            requestAnimationFrame(animateParticles);
-        }
-
-        // Havai fişek efekti
-        function createFirework() {
-            const fireworks = [];
-            const count = isMobile ? 20 : 30;
-            
-            for (let i = 0; i < count; i++) {
-                const firework = {
-                    x: Math.random() * canvas.width,
-                    y: Math.random() * canvas.height,
-                    size: Math.random() * 3 + 1,
-                    speedX: (Math.random() - 0.5) * (isMobile ? 5 : 10),
-                    speedY: (Math.random() - 0.5) * (isMobile ? 5 : 10),
-                    color: `hsl(${Math.random() * 360}, 100%, 50%)`
-                };
-                fireworks.push(firework);
-            }
-
-            function explode() {
-                ctx.fillStyle = 'rgba(0,0,0,0.1)';
-                ctx.fillRect(0, 0, canvas.width, canvas.height);
-                fireworks.forEach(firework => {
-                    firework.x += firework.speedX;
-                    firework.y += firework.speedY;
-                    firework.size *= 0.95;
-                    ctx.fillStyle = firework.color;
-                    ctx.beginPath();
-                    ctx.arc(firework.x, firework.y, firework.size, 0, Math.PI * 2);
-                    ctx.fill();
-                });
-                if (fireworks[0].size > 0.1) requestAnimationFrame(explode);
-            }
-            explode();
-        }
-
-        // Mesajlar ve animasyonlar
-        const messages = [
-            "İyi ki doğdun Cennet! 🎉",
-            "İyiki varsın, iyiki tanıştık 💖",
-            "Her günün bir öncekinden daha güzel olsun 🌟",
-            "Umarım hep mutlu olursun 😊",
-            "Seni çok seviyorum! 💕"
-        ];
-
-        function showMessages() {
-            messages.forEach((msg, i) => {
-                setTimeout(() => {
-                    const div = document.createElement('div');
-                    div.className = 'notification';
-                    div.textContent = msg;
-                    document.getElementById('notifications').appendChild(div);
-                    
-                    setTimeout(() => {
-                        div.style.transform = 'translateY(-50px)';
-                        div.style.opacity = '0';
-                        setTimeout(() => div.remove(), 500);
-                    }, 3000);
-                }, i * 2000);
-            });
-
-            setTimeout(createHearts, messages.length * 2000);
-        }
-
-        function createHearts() {
-            const heartCount = isMobile ? 30 : 50;
-            for (let i = 0; i < heartCount; i++) {
-                const heart = document.createElement('div');
-                heart.className = 'heart';
-                heart.innerHTML = '❤️';
-                heart.style.left = Math.random() * 100 + '%';
-                heart.style.animationDelay = i * 0.2 + 's';
-                document.body.appendChild(heart);
-            }
-            setInterval(createFirework, isMobile ? 2000 : 1500);
-        }
-
-        // Touch events
-        document.getElementById('finalHeart').addEventListener('click', handleTap);
-        document.getElementById('finalHeart').addEventListener('touchstart', handleTap);
-
-        function handleTap() {
-            this.style.transform = 'translate(-50%, -50%) scale(0.9)';
-            setTimeout(() => {
-                this.style.transform = 'translate(-50%, -50%) scale(1)';
-            }, 100);
-        }
-
-        // Başlangıç
-        initParticles();
-        animateParticles();
-        showMessages();
-
-        // Resize handler
-        window.addEventListener('resize', () => {
-            initCanvas();
-            particles.length = 0;
-            initParticles();
-        });
-    </script>
+    <div class="broken-heart"></div>
 </body>
+</html>
 </html>
