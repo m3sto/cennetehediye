@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <title>İyi Ki Doğdun Cennet! ❤️</title>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            background: #1a1a1a;
+            font-family: 'Arial', sans-serif;
+        }
+
+        #container {
+            position: relative;
+            height: 100vh;
+        }
+
+        .notification {
+            position: absolute;
+            top: 20px;
+            right: -300px;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 15px 25px;
+            border-radius: 15px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            animation: slideIn 0.5s forwards;
+            margin: 10px 0;
+        }
+
+        @keyframes slideIn {
+            to { right: 20px; }
+        }
+
+        .heart {
+            position: absolute;
+            font-size: 24px;
+            color: #ff4081;
+            animation: float 4s infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(10deg); }
+        }
+
+        #finalHeart {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0);
+            font-size: 200px;
+            color: #ff1744;
+            animation: pulse 2s forwards;
+            cursor: pointer;
+        }
+
+        @keyframes pulse {
+            0% { transform: translate(-50%, -50%) scale(0); }
+            50% { transform: translate(-50%, -50%) scale(1.2); }
+            100% { transform: translate(-50%, -50%) scale(1); }
+        }
+
+        #finalMessage {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            padding: 30px 50px;
+            border-radius: 20px;
+            text-align: center;
+            opacity: 0;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            animation: messagePop 1s 10s forwards;
+        }
+
+        @keyframes messagePop {
+            0% { opacity: 0; transform: translate(-50%, -50%) scale(0); }
+            100% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+        }
+
+        canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+        }
+    </style>
+</head>
+<body>
+    <div id="container">
+        <canvas id="particles"></canvas>
+        <div id="notifications"></div>
+        <div id="finalHeart">❤️</div>
+        <div id="finalMessage">
+            <h2>Nice Mutlu Senelere Cennet! ❤️</h2>
+            <p>En kötü günün doğum günün gibi olsun!</p>
+			<p>-musto</p>
+        </div>
+    </div>
+
+    <script>
+        // Partikül efekti
+        const canvas = document.getElementById('particles');
+        const ctx = canvas.getContext('2d');
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        const particles = [];
+        class Particle {
+            constructor() {
+                this.x = Math.random() * canvas.width;
+                this.y = 0;
+                this.size = Math.random() * 5 + 2;
+                this.speed = Math.random() * 3 + 2;
+                this.color = `hsl(${Math.random() * 360}, 70%, 50%)`;
+            }
+
+            update() {
+                this.y += this.speed;
+                if (this.y > canvas.height) this.y = 0;
+            }
+
+            draw() {
+                ctx.fillStyle = this.color;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
+
+        function initParticles() {
+            for (let i = 0; i < 50; i++) {
+                particles.push(new Particle());
+            }
+        }
+
+        function animateParticles() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            particles.forEach(particle => {
+                particle.update();
+                particle.draw();
+            });
+            requestAnimationFrame(animateParticles);
+        }
+
+        // Havai fişek efekti
+        function createFirework() {
+            const fireworks = [];
+            for (let i = 0; i < 30; i++) {
+                const firework = {
+                    x: Math.random() * canvas.width,
+                    y: Math.random() * canvas.height,
+                    size: Math.random() * 3 + 1,
+                    speedX: (Math.random() - 0.5) * 10,
+                    speedY: (Math.random() - 0.5) * 10,
+                    color: `hsl(${Math.random() * 360}, 100%, 50%)`
+                };
+                fireworks.push(firework);
+            }
+
+            function explode() {
+                ctx.fillStyle = 'rgba(0,0,0,0.1)';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                fireworks.forEach(firework => {
+                    firework.x += firework.speedX;
+                    firework.y += firework.speedY;
+                    firework.size *= 0.95;
+                    ctx.fillStyle = firework.color;
+                    ctx.beginPath();
+                    ctx.arc(firework.x, firework.y, firework.size, 0, Math.PI * 2);
+                    ctx.fill();
+                });
+                if (fireworks[0].size > 0.1) requestAnimationFrame(explode);
+            }
+            explode();
+        }
+
+        // Mesajlar ve animasyonlar
+        const messages = [
+            "İyi ki doğdun Cennet! 🎉",
+            "İyiki varsın, iyiki tanıştık 💖",
+            "Her günün bir öncekinden daha güzel olsun 🌟",
+            "Umarım hep mutlu olursun 😊",
+            "Seni çok seviyorum! 💕"
+        ];
+
+        function showMessages() {
+            messages.forEach((msg, i) => {
+                setTimeout(() => {
+                    const div = document.createElement('div');
+                    div.className = 'notification';
+                    div.textContent = msg;
+                    document.getElementById('notifications').appendChild(div);
+                    
+                    setTimeout(() => {
+                        div.style.transform = 'translateY(-50px)';
+                        div.style.opacity = '0';
+                    }, 3000);
+                }, i * 2000);
+            });
+
+            setTimeout(createHearts, messages.length * 2000);
+        }
+
+        function createHearts() {
+            for (let i = 0; i < 50; i++) {
+                const heart = document.createElement('div');
+                heart.className = 'heart';
+                heart.innerHTML = '❤️';
+                heart.style.left = Math.random() * 100 + '%';
+                heart.style.animationDelay = i * 0.2 + 's';
+                document.body.appendChild(heart);
+            }
+            setInterval(createFirework, 1500);
+        }
+
+        // Başlangıç
+        initParticles();
+        animateParticles();
+        showMessages();
+
+        // Boyut değişikliğini takip et
+        window.addEventListener('resize', () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        });
+    </script>
+</body>
+</html>
